@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<module rename-to="HttpTest" >
+    <inherits name="com.divroll.http.HttpClient" />
+    <source path="client" />
+</module>

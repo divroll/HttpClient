@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to="http">
+  <inherits name="com.google.gwt.core.Core" />
+  <inherits name="com.google.gwt.user.User"/>
+  <inherits name="com.google.gwt.i18n.I18N"/>
+  <inherits name="com.google.gwt.json.JSON"/>
+  <inherits name="com.google.common.collect.Collect"/>
+  <inherits name="io.reactivex.RxJava"/>
+  <inherits name="org.JSON"/>
+  <set-property name="gwt.logging.enabled" value="TRUE"/>
+  <!-- Specify the paths for translatable code -->
+  <source path="client"/>
+</module>
