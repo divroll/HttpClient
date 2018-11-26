@@ -7,6 +7,8 @@
   <inherits name="com.google.common.collect.Collect"/>
   <inherits name="io.reactivex.RxJava"/>
   <inherits name="org.JSON"/>
+  <inherits name="elemental2.dom.Dom"/>
+
   <set-property name="gwt.logging.enabled" value="TRUE"/>
   <!-- Specify the paths for translatable code -->
   <source path="client"/>

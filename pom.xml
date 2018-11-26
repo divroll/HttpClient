@@ -90,6 +90,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.google.elemental2</groupId>
+			<artifactId>elemental2-dom</artifactId>
+			<version>1.0.0-RC1</version>
+		</dependency>
+		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
@@ -111,9 +116,22 @@
 			<version>0.8.6-gwt2</version>
 		</dependency>
 		<dependency>
+			<groupId>com.intendia.gwt</groupId>
+			<artifactId>rxjava2-gwt</artifactId>
+			<version>2.2.2-gwt2</version>
+		</dependency>
+		<!-- TODO: Inject the GwtIncompatible.class file first in the jar -->
+		<dependency>
 			<groupId>com.intendia.gwt.rxgwt2</groupId>
 			<artifactId>rxgwt</artifactId>
 			<version>2.2</version>
+			<!--<version>HEAD-SNAPSHOT</version>-->
+			<exclusions>
+				<exclusion>
+					<groupId>com.intendia.gwt</groupId>
+					<artifactId>rxjava2-gwt</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

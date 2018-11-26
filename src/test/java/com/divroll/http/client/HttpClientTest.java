@@ -1,5 +1,6 @@
 package com.divroll.http.client;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.Window;
@@ -8,6 +9,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -193,4 +198,55 @@ public class HttpClientTest extends GWTTestCase {
 //        HttpResponse<JsonNode> response = responseSingle.blockingGet();
 //        Window.alert(response.getBody().toString());
     }
+
+    public void testBinaryGet() {
+        Single<HttpResponse<InputStream>> response
+                = HttpClient.get("https://cors-anywhere.herokuapp.com/https://i.imgur.com/qxOJUDB.jpg").asBinary();
+        response.subscribe(response1 -> {
+
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            int nRead;
+            byte[] data = new byte[1024];
+            while ((nRead = response1.getBody().read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            buffer.flush();
+            byte[] byteArray = buffer.toByteArray();
+
+            Window.alert("length=" + byteArray.length);
+            Window.alert(new String(byteArray, StandardCharsets.UTF_8));
+            finishTest();
+        }, error -> {
+            Window.alert(error.toString());
+            fail();
+        });
+        delayTestFinish(6000);
+    }
+
+    public void testBinaryPost() {
+        Single<HttpResponse<InputStream>> response
+                = HttpClient.get("https://cors-anywhere.herokuapp.com/https://i.imgur.com/qxOJUDB.jpg").asBinary();
+        response.subscribe(response1 -> {
+            InputStream inputStream = response1.getBody();
+            Single<HttpResponse<String>> postRequest
+                    = HttpClient.post("https://httpbin.org/post")
+                    .body(inputStream)
+                    .asString();
+            postRequest.subscribe(postresponse -> {
+                Window.alert("POST RESPONSE=" + postresponse.getBody());
+                finishTest();
+            });
+        }, error -> {
+            Window.alert(error.toString());
+            fail();
+        });
+        delayTestFinish(6000);
+    }
+
+    public static native String createBlobUrl(JavaScriptObject blob) /*-{
+        var url = $wnd.URL.createObjectURL(blob);
+        return url;
+    }-*/;
+
+
 }

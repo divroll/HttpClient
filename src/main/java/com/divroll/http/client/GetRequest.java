@@ -3,11 +3,15 @@ package com.divroll.http.client;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gwt.http.client.*;
+import com.google.gwt.user.client.Window;
+import elemental2.dom.XMLHttpRequest;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -92,7 +96,84 @@ public class GetRequest {
     }
 
     public Single<HttpResponse<InputStream>> asBinary() {
-        return null;
+        return Single.create(emitter -> {
+            if(queryMap != null && !queryMap.isEmpty()){
+                url = url + "?";
+                url = url +  queries(queryMap);
+            }
+            XMLHttpRequest xhr = new XMLHttpRequest();
+            xhr.open("GET", url);
+//            b.setTimeoutMillis(TIMEOUT);
+            if(headerMap != null){
+                // Check first if Content-Type and accept headers are already set else set defaults
+                boolean hasContentType = false;
+                boolean hasAccept = false;
+                for (Map.Entry<String,String> entry : headerMap.entries()) {
+                    if(entry.getKey() != null && entry.getValue() != null
+                            && !entry.getKey().isEmpty() && !entry.getValue().isEmpty()) {
+                        if(entry.getKey().equals("Content-Type")) {
+                            hasContentType = true;
+                        } else if (entry.getKey().equals("accept")) {
+                            hasAccept = true;
+                        }
+                    }
+                }
+                if(!hasAccept) {
+                    headerMap.put("accept", "application/json");
+                }
+                if(!hasContentType) {
+                    headerMap.put("Content-Type", "application/json");
+                }
+                for (Map.Entry<String,String> entry : headerMap.entries()) {
+                    if(entry.getKey() != null && entry.getValue() != null
+                            && !entry.getKey().isEmpty() && !entry.getValue().isEmpty()) {
+                        xhr.setRequestHeader(entry.getKey(), entry.getValue());
+                    }
+                }
+            }
+            if(fields != null && !fields.isEmpty()){
+                StringBuilder sb = new StringBuilder();
+                Iterator<Map.Entry<String,Object>> it = fields.entrySet().iterator();
+                while(it.hasNext()){
+                    Map.Entry<String,Object> entry = it.next();
+                    if(entry.getValue() instanceof String){
+                        if(!it.hasNext()){
+                            sb.append(entry.getKey()).append("=").append(URL.encodeComponent((String.valueOf(entry.getValue()))));
+                        } else {
+                            sb.append(entry.getKey()).append("=").append(URL.encodeComponent((String.valueOf(entry.getValue())))).append("&");
+                        }
+                    }
+                }
+                xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+            }
+            if(authorization != null){
+                xhr.setRequestHeader("Authorization", authorization);
+            }
+            xhr.onprogress = p0 -> {
+                double percentage = 100 - ( ( (p0.total - p0.loaded) / p0.total) * 100 );
+                if(!Double.isInfinite(percentage)) {
+                    Double.valueOf(percentage).longValue();
+                }
+            };
+            xhr.onerror = p0 -> {
+                // TODO: Check actual error
+                emitter.onError(new HttpRequestException());
+                return null;
+            };
+            xhr.onreadystatechange = p0 -> {
+                if(xhr.readyState == XMLHttpRequest.DONE) {
+                    // Not called
+                }
+                return null;
+            };
+            xhr.onload = p0 -> {
+                Window.alert(xhr.statusText);
+                Window.alert(xhr.status + "");
+                Window.alert(xhr.responseText + "");
+                emitter.onSuccess(new InputStreamHttpResponse(xhr.status, xhr.statusText, new ByteArrayInputStream(xhr.responseText.getBytes())));
+            };
+            xhr.send();
+        });
     }
 
     public Single<HttpResponse<JsonNode>> asJson() {

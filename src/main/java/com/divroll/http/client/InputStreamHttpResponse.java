@@ -8,8 +8,10 @@ public class InputStreamHttpResponse implements HttpResponse<InputStream> {
     private String statusText;
     private InputStream inputStream;
 
-    public InputStreamHttpResponse(InputStream inputStream) {
+    public InputStreamHttpResponse(int status, String statusText, InputStream inputStream) {
         this.inputStream = inputStream;
+        this.status = status;
+        this.statusText = statusText;
     }
 
     @Override
