@@ -234,6 +234,7 @@ public class HttpClientTest extends GWTTestCase {
                     .asString();
             postRequest.subscribe(postresponse -> {
                 Window.alert("POST RESPONSE=" + postresponse.getBody());
+                //FileSaver.saveFileAs("D:/test.txt", postresponse.getBody(), "text/plain");
                 finishTest();
             });
         }, error -> {
