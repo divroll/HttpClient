@@ -239,6 +239,16 @@
 					<name>oss-jfrog-artifactory-snapshots</name>
 					<url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>
 				</repository>
+				<repository>
+					<id>divroll-github-repo</id>
+					<url>https://raw.githubusercontent.com/divroll/repo/master/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
 			</repositories>
 		</profile>
 	</profiles>
