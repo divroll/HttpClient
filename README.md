@@ -1,5 +1,5 @@
 # HttpClient
-HttpClient what works both in JVM and TeaVM
+A fluent HTTP client for Java/TeaVM.
 
 #### Example Usage
 
@@ -30,9 +30,9 @@ mvn clean install
 
 ```xml
 <dependency>
-   <groupId>org.cyberquarks</groupId>
+   <groupId>com.divroll</groupId>
    <artifactId>httpclient</artifactId>
-   <version>0-SNAPSHOT</version>
+   <version>SNAPSHOT</version>
 </dependency>
 ```
 
